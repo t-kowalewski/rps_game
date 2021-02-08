@@ -26,7 +26,8 @@ const getUserChoice = () => {
 
   if (selection !== ROCK && selection !== PAPER && selection !== SCISSORS) {
     alert(`Invalid choice. We choose default value "${DEFAULT_USER_CHOICE}"`);
-    return DEFAULT_USER_CHOICE;
+    // return DEFAULT_USER_CHOICE;
+    return; // function returns undefined
   } else {
     return selection;
   }
@@ -43,7 +44,7 @@ const getComputerChoice = () => {
   }
 };
 
-const getWinner = (pChoice, cChoice) => {
+const getWinner = (cChoice, pChoice = DEFAULT_USER_CHOICE) => {
   if (pChoice === cChoice) {
     return RESULT_DRAW;
   } else if (
@@ -65,11 +66,19 @@ startGameBtn.addEventListener('click', () => {
 
   console.log('Starting game!');
   gameIsRunning = true;
-  const playerChoice = getUserChoice();
+  const playerChoice = getUserChoice(); // might be undefined
   const computerChoice = getComputerChoice();
-  const winner = getWinner(playerChoice, computerChoice);
 
-  let message = `You had ${playerChoice} and computer had ${computerChoice}. `;
+  let winner;
+  if (playerChoice) {
+    winner = getWinner(computerChoice, playerChoice);
+  } else {
+    winner = getWinner(computerChoice);
+  }
+
+  let message = `You had ${
+    playerChoice || DEFAULT_USER_CHOICE
+  } and computer had ${computerChoice}. `;
   if (winner === RESULT_DRAW) {
     message += RESULT_DRAW;
   } else if (winner === RESULT_PLAYER_WINS) {
@@ -80,7 +89,9 @@ startGameBtn.addEventListener('click', () => {
 
   alert(message);
   console.log(
-    `Player choice: ${playerChoice}; Computer choice: ${computerChoice} => Result: ${winner}`
+    `Player choice: ${
+      playerChoice ? playerChoice : DEFAULT_USER_CHOICE
+    }; Computer choice: ${computerChoice} => Result: ${winner}`
   );
 
   gameIsRunning = false;
